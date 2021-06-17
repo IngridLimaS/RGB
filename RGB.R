@@ -14,6 +14,7 @@ setwd(choose.dir())
 # Pacotes
 library(raster)
 library(rgdal)
+library(sp)
 
 # lista imagens
 ti <- dir(pattern = ".tif$")
@@ -34,17 +35,13 @@ for(i in 1:length(ti)){
 var <-  raster::stack(ti[i])
 var
 
-#r <- raster::raster(var, band = 3)
-#g <- raster::raster(var, band = 2)
-#b <- raster::raster(var, band = 1)
+r <- raster::raster(var, band = 3)
+g <- raster::raster(var, band = 2)
+b <- raster::raster(var, band = 1)
 
-#Importação dos tiffs
-b <- paste0(var, "bird_tif/SJER/RGB/band19.tif")
-g <- paste0(var, "bird_tif/SJER/RGB/band34.tif")
-r <- paste0(var, "bird_tif/SJER/RGB/band58.tif")
 
 # União das bandas
-rgb <- brick(b,g,r)
+rgb <- brick(r,g,b)
 
 # Visualização dos dados
 p <- plot(rgb)
