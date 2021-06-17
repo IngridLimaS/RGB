@@ -20,8 +20,8 @@ ti <- dir(pattern = ".tif$")
 ti
 
 # importa todos
-var <- raster::stack(ti)
-var
+#var <- raster::stack(ti)
+#var
 
 # Bandas
 for(i in 1:length(ti)){
@@ -33,9 +33,15 @@ for(i in 1:length(ti)){
 #b
 var <-  raster::stack(ti[i])
 var
-r <- raster::raster(var, band = 3)
-g <- raster::raster(var, band = 2)
-b <- raster::raster(var, band = 1)
+
+#r <- raster::raster(var, band = 3)
+#g <- raster::raster(var, band = 2)
+#b <- raster::raster(var, band = 1)
+
+#Importação dos tiffs
+b <- paste0(var, "bird_tif/SJER/RGB/band19.tif")
+g <- paste0(var, "bird_tif/SJER/RGB/band34.tif")
+r <- paste0(var, "bird_tif/SJER/RGB/band58.tif")
 
 # União das bandas
 rgb <- brick(b,g,r)
