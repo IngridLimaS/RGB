@@ -15,6 +15,7 @@ setwd(choose.dir())
 library(raster)
 library(rgdal)
 library(sp)
+library(imager)
 
 # lista imagens
 ti <- dir(pattern = ".tif$")
