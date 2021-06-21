@@ -1,14 +1,17 @@
 
-#RGB de aves
-#Data create: 16-16-2021
-#Data lest edit: 17-06-2021
-#Autor: Ingrid Lima, Victor Leandro-Silva
+############################################
+# RGB de aves
+# Data create: 16-16-2021
+# Data lest edit: 17-06-2021
+# Autor: Ingrid Lima, Victor Leandro-Silva
+############################################
 
 # seed
 set.seed(1)
 
 # dir
 setwd(choose.dir())
+dir()
 
 
 # Pacotes
@@ -26,19 +29,22 @@ ti
 #var
 
 # Bandas
-for(i in 1:length(ti)){
+
 #r <- raster("Amazona_brasiliensis.tif", band = 3)
 #r
 #g <- raster("Amazona_brasiliensis.tif", band = 2)
 #g
 #b <- raster("Amazona_brasiliensis.tif", band = 1)
 #b
+
+i<-1
+for(i in 1:length(ti)){
 var <-  raster::stack(ti[i])
 var
 
-r <- raster::raster(var, band = 3)
-g <- raster::raster(var, band = 2)
-b <- raster::raster(var, band = 1)
+r <- raster::raster(ti[i], band = 3)
+g <- raster::raster(ti[i], band = 2)
+b <- raster::raster(ti[i], band = 1)
 
 
 # União das bandas
@@ -49,6 +55,7 @@ p <- plot(rgb)
 tiff(paste0("plot_", ti, ".tif")); plot(p); dev.off()
   
 h <- hist(rgb)
+h
 tiff(paste0("hist_", ti, ".tif")); plot(h); dev.off()
   
 p.rgb <- plotRGB(rgb, r = 3, g= 2, b = 1, stretch = "lin")
@@ -56,3 +63,37 @@ tiff(paste0("plot_rgb", ti, ".tif")); plot(p.rgb); dev.off()
 
 
 }
+
+#Converter histograma em .csv
+csv2hist <- function(csv_path)
+
+write.csv(rgb, csv_path)
+
+# Salvar histograma em .csv
+hist2csv <- function(h, csv_path)
+{
+  df <-  data.frame(breaks = h$breaks,   counts = c(h$counts, 1),
+                    density = c(h$density, 1), mids = c(h$mids, 1),
+                    xname = rep(h$xname, length(h$breaks)), 
+                    equidist = rep(T, length(h$breaks)))
+  
+  write.csv(df, csv_path)
+}
+
+#Carregar dados dohistograma no csv
+csv2hist <- function(csv_path)
+{
+  df         <- read.csv(csv_path)
+  h          <- as.list(df)
+  h$counts   <- h$counts[-length(h$breaks)]
+  h$density  <- h$density[-length(h$breaks)]
+  h$mids     <- h$mids[-length(h$breaks)]
+  h$xname    <- h$xname[1]
+  h$equidist <- h$equidist[1]
+  class(h)   <- "histogram"
+  
+  return(h)
+}
+
+# Saval csv
+hist2csv(h, "hist.csv")
