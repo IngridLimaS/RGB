@@ -19,6 +19,8 @@ library(raster)
 library(rgdal)
 library(sp)
 library(imager)
+library(ggplot2)
+
 
 # lista imagens
 ti <- dir(pattern = ".tif$")
@@ -64,12 +66,10 @@ tiff(paste0("plot_rgb", ti, ".tif")); plot(p.rgb); dev.off()
 
 }
 
-#Converter histograma em .csv
-csv2hist <- function(csv_path)
 
-write.csv(rgb, csv_path)
+# Salvar frequencia das bandas em .csv
 
-# Salvar histograma em .csv
+#Via 01
 hist2csv <- function(h, csv_path)
 {
   df <-  data.frame(breaks = h$breaks,   counts = c(h$counts, 1),
@@ -80,20 +80,8 @@ hist2csv <- function(h, csv_path)
   write.csv(df, csv_path)
 }
 
-#Carregar dados dohistograma no csv
-csv2hist <- function(csv_path)
-{
-  df         <- read.csv(csv_path)
-  h          <- as.list(df)
-  h$counts   <- h$counts[-length(h$breaks)]
-  h$density  <- h$density[-length(h$breaks)]
-  h$mids     <- h$mids[-length(h$breaks)]
-  h$xname    <- h$xname[1]
-  h$equidist <- h$equidist[1]
-  class(h)   <- "histogram"
-  
-  return(h)
-}
-
-# Saval csv
-hist2csv(h, "hist.csv")
+# Via 02
+out  <- data.frame(mid = h$mids, counts = h$counts)
+out
+write.table(out, file = "export.csv", row.names = FALSE, sep = ",")
+write.csv(h, "RBG_aves.csv")
