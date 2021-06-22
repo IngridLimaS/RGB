@@ -20,6 +20,7 @@ library(rgdal)
 library(sp)
 library(imager)
 library(ggplot2)
+library(dplyr)
 
 
 # lista imagens
@@ -31,7 +32,6 @@ ti
 #var
 
 # Bandas
-
 #r <- raster("Amazona_brasiliensis.tif", band = 3)
 #r
 #g <- raster("Amazona_brasiliensis.tif", band = 2)
@@ -40,14 +40,16 @@ ti
 #b
 
 i<-1
-for(i in 1:length(ti)){
+for(i in 11:length(ti)){
 var <-  raster::stack(ti[i])
 var
 
 r <- raster::raster(ti[i], band = 3)
+r
 g <- raster::raster(ti[i], band = 2)
+g
 b <- raster::raster(ti[i], band = 1)
-
+b
 
 # União das bandas
 rgb <- brick(r,g,b)
@@ -66,22 +68,36 @@ tiff(paste0("plot_rgb", ti, ".tif")); plot(p.rgb); dev.off()
 
 }
 
+#Visualização das bandas
+
+plot(r)
+band_R<-hist(r)
+band_R
+
+plot(g)
+band_G<-hist(g)
+band_G
+
+plot(b)
+band_B<-hist(b)
+band_B
+
 
 # Salvar frequencia das bandas em .csv
 
-#Via 01
-hist2csv <- function(h, csv_path)
-{
-  df <-  data.frame(breaks = h$breaks,   counts = c(h$counts, 1),
-                    density = c(h$density, 1), mids = c(h$mids, 1),
-                    xname = rep(h$xname, length(h$breaks)), 
-                    equidist = rep(T, length(h$breaks)))
-  
-  write.csv(df, csv_path)
-}
-
-# Via 02
-out  <- data.frame(mid = h$mids, counts = h$counts)
+#R
+out  <- data.frame(mid = band_R$mids, counts = band_R$counts)
 out
-write.table(out, file = "export.csv", row.names = FALSE, sep = ",")
-write.csv(h, "RBG_aves.csv")
+write.table(out, file = "band_R.csv", row.names = FALSE, sep = ",")
+
+#G
+out  <- data.frame(mid = band_G$mids, counts = band_G$counts)
+out
+write.table(out, file = "band_G.csv", row.names = FALSE, sep = ",")
+
+#B
+out  <- data.frame(mid = band_B$mids, counts = band_B$counts)
+out
+write.table(out, file = "band_B.csv", row.names = FALSE, sep = ",")
+
+
